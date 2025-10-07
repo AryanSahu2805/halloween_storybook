@@ -17,18 +17,27 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   Timer? movementTimer;
   late AnimationController _shakeController;
   bool _isShaking = false;
+  bool _isInitialized = false;
   final Random random = Random();
 
   @override
   void initState() {
     super.initState();
-    _initializeGame();
-    _startMovement();
     
     _shakeController = AnimationController(
       duration: const Duration(milliseconds: 500),
       vsync: this,
     );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isInitialized) {
+      _initializeGame();
+      _startMovement();
+      _isInitialized = true;
+    }
   }
 
   void _initializeGame() {
