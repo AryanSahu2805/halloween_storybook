@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:audioplayers/audioplayers.dart';
 import '../utils/constants.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -10,10 +11,12 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   double _opacity = 0.0;
+  final AudioPlayer _backgroundMusicPlayer = AudioPlayer();
 
   @override
   void initState() {
     super.initState();
+    _initBackgroundMusic();
     // Fade in animation
     Future.delayed(const Duration(milliseconds: 300), () {
       if (mounted) {
@@ -22,6 +25,25 @@ class _HomeScreenState extends State<HomeScreen> {
         });
       }
     });
+  }
+
+  Future<void> _initBackgroundMusic() async {
+    await _backgroundMusicPlayer.setReleaseMode(ReleaseMode.loop);
+    await _backgroundMusicPlayer.setVolume(0.3);
+  }
+
+  Future<void> _startBackgroundMusic() async {
+    try {
+      await _backgroundMusicPlayer.play(AssetSource('sounds/spookymusic.mp3'));
+    } catch (e) {
+      print('Could not start background music: $e');
+    }
+  }
+
+  @override
+  void dispose() {
+    _backgroundMusicPlayer.dispose();
+    super.dispose();
   }
 
   @override
@@ -102,7 +124,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 
                 // Start button
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
+                    await _startBackgroundMusic();
                     Navigator.pushNamed(context, '/game');
                   },
                   style: ElevatedButton.styleFrom(
