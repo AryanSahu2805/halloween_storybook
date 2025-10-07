@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:audioplayers/audioplayers.dart';
 import '../utils/constants.dart';
 
 class WinScreen extends StatefulWidget {
@@ -13,6 +14,7 @@ class _WinScreenState extends State<WinScreen>
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
   late Animation<double> _rotationAnimation;
+  final AudioPlayer _victorySoundPlayer = AudioPlayer();
 
   @override
   void initState() {
@@ -32,11 +34,17 @@ class _WinScreenState extends State<WinScreen>
     );
 
     _controller.forward();
+    _playVictorySound();
+  }
+
+  Future<void> _playVictorySound() async {
+    await _victorySoundPlayer.play(AssetSource('sounds/spookymusic.mp3'));
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    _victorySoundPlayer.dispose();
     super.dispose();
   }
 

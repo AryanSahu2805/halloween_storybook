@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:audioplayers/audioplayers.dart';
 import '../models/game_item.dart';
 import '../utils/constants.dart';
 import '../widgets/game_object.dart';
@@ -19,6 +20,10 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   bool _isShaking = false;
   bool _isInitialized = false;
   final Random random = Random();
+  
+  // Audio players for sound effects
+  final AudioPlayer _trapSoundPlayer = AudioPlayer();
+  final AudioPlayer _winSoundPlayer = AudioPlayer();
 
   @override
   void initState() {
@@ -88,13 +93,16 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     });
   }
 
-  void _handleObjectTap(GameObject obj) {
+  void _handleObjectTap(GameObject obj) async {
     if (obj.isCorrect) {
-      // Player wins!
+      // Player wins! Play win sound
+      await _winSoundPlayer.play(AssetSource('sounds/spookymusic.mp3')); // Using same sound for now
       movementTimer?.cancel();
       Navigator.pushReplacementNamed(context, '/win');
     } else if (obj.isTrap) {
-      // Jump scare!
+      // Jump scare! Play trap sound
+      await _trapSoundPlayer.play(AssetSource('sounds/spookymusic.mp3')); // Using same sound for now
+      
       setState(() {
         _isShaking = true;
       });
@@ -124,6 +132,8 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   void dispose() {
     movementTimer?.cancel();
     _shakeController.dispose();
+    _trapSoundPlayer.dispose();
+    _winSoundPlayer.dispose();
     super.dispose();
   }
 
