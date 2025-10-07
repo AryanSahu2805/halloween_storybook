@@ -22,5 +22,5 @@ flutter:
   
   # Add sound assets here
   assets:
-    - assets/sounds/
+    - assets/sounds/spookymusic.mp3
     - assets/images/
